@@ -1,0 +1,55 @@
+#Tab spacing in file
+:%s/\s\+/\t/g
+ 
+#Replacing names in a file
+:%s/“//g
+ 
+ 
+#Convert vcf to xls
+for f in dna-*/*.vcf; do mv "$f" "${f%.vcf}.xls"; done
+  
+#copy files of same name under different folders and rename it according to respective folder:
+ 
+for f in */aln/bwa.bam; do cp -v "$f" /path/to/folder/"${f//\//_}"; done
+  
+
+#removing/adjusting content after git pull
+
+sed -i '/^=======/,/^>>>>>>> origin/d'
+sed -i '/<<<<<<< HEAD/d' 
+
+
+#Txt2BED
+ 
+awk -F '\t' '{OFS="\t"} {print $1,($2-1),$3}' target.txt | sed '1d' | sort -k1,1V -k2,2n -k3,3n > target.bed
+ 
+#BED2txt
+awk -F '\t' '{OFS="\t"} {print $1,($2+1),$3}' target.bed | sed -e '1i\seqName\tstart\tend' > target.txt
+ 
+ 
+#Find a folder under another folder/recursively
+ 
+find path/to/folder/ -type d -name "*keyword*"
+ 
+#find file name under folder recursively
+ 
+find path/to/folder/* -type f -name "*keyword*"
+
+#To add or subtract numbers to specific columns (useful for bedfile padding if preparing an annotated bed file with exons and gene names)
+ 
+awk -v s=5 '{print $1, $2-s, $3+s, $4}' allCDS.bed > allCDS_5.bed
+ 
+#Sort by 1st 3 columns
+sort -k1,1V -k2,2n -k3,3n finalBED_15bp.bed > finalBED_15bp_sorted.bed
+
+#load ref files as batch script to IGV
+load /path/to/repeatmasker_hg19
+.
+.
+.
+load /last/ref/file
+expand
+
+#Intersect
+
+bedtools intersect -a sorted_file1.bed -b sorted_file2.bed > common_regions.bed
